@@ -6,6 +6,8 @@ import ProgressBar from './ProgressBar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { formatDuration } from '../utils/helpers';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const UnifiedDownloader = () => {
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
@@ -43,7 +45,7 @@ const UnifiedDownloader = () => {
 
         try {
             const endpoint = videoType === 'playlist' ? '/api/playlist/info' : '/api/video/info';
-            const response = await axios.post(`http://localhost:5000${endpoint}`, { url: targetUrl });
+            const response = await axios.post(`${API_BASE_URL}${endpoint}`, { url: targetUrl });
             setData(response.data);
         } catch (err) {
             console.error('Fetch error:', err);
@@ -65,7 +67,7 @@ const UnifiedDownloader = () => {
     const trackProgress = (taskId) => {
         if (eventSourceRef.current) eventSourceRef.current.close();
         
-        const es = new EventSource(`http://localhost:5000/api/progress/${taskId}`);
+        const es = new EventSource(`${API_BASE_URL}/api/progress/${taskId}`);
         eventSourceRef.current = es;
 
         es.onmessage = (event) => {
@@ -118,7 +120,7 @@ const UnifiedDownloader = () => {
 
         try {
             const params = { url: actualUrl, taskId, audio: isAudio, format: formatId };
-            await axios.get('http://localhost:5000/api/video/download', { params });
+            await axios.get(`${API_BASE_URL}/api/video/download`, { params });
             trackProgress(taskId);
         } catch (err) {
             setError('Failed to begin download. Please check your connection.');
@@ -137,7 +139,7 @@ const UnifiedDownloader = () => {
         });
 
         try {
-            await axios.get('http://localhost:5000/api/playlist/download', { params: { url, taskId } });
+            await axios.get(`${API_BASE_URL}/api/playlist/download`, { params: { url, taskId } });
             trackProgress(taskId);
         } catch (err) {
             setError('Failed to begin playlist processing.');
@@ -148,7 +150,7 @@ const UnifiedDownloader = () => {
     const handleCancel = async () => {
         if (!downloadProgress?.taskId) return;
         try {
-            await axios.post('http://localhost:5000/api/download/cancel', { taskId: downloadProgress.taskId });
+            await axios.post(`${API_BASE_URL}/api/download/cancel`, { taskId: downloadProgress.taskId });
             if (eventSourceRef.current) eventSourceRef.current.close();
             setDownloadProgress(null);
         } catch (err) {
@@ -158,7 +160,7 @@ const UnifiedDownloader = () => {
 
     const triggerFinalDownload = (taskId) => {
         // Use location.assign as it's more reliable for forced downloads via res.download
-        window.location.assign(`http://localhost:5000/api/download/file/${taskId}`);
+        window.location.assign(`${API_BASE_URL}/api/download/file/${taskId}`);
     };
 
     useEffect(() => {

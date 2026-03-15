@@ -4,6 +4,8 @@ import axios from 'axios';
 import ProgressBar from './ProgressBar';
 import { motion } from 'framer-motion';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const PlaylistDownloader = () => {
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
@@ -21,7 +23,7 @@ const PlaylistDownloader = () => {
         setDownloadProgress(null);
 
         try {
-            const { data } = await axios.post('http://localhost:5000/api/playlist/info', { url });
+            const { data } = await axios.post(`${API_BASE_URL}/api/playlist/info`, { url });
             setPlaylistData(data);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to fetch playlist. Ensure it is a valid YouTube playlist URL.');
@@ -34,7 +36,7 @@ const PlaylistDownloader = () => {
         setDownloadProgress({ status: 'Preparing ZIP...', progress: 10 });
 
         try {
-            const downloadUrl = `http://localhost:5000/api/playlist/download?url=${encodeURIComponent(url)}`;
+            const downloadUrl = `${API_BASE_URL}/api/playlist/download?url=${encodeURIComponent(url)}`;
             const link = document.createElement('a');
             link.href = downloadUrl;
             link.style.display = 'none';

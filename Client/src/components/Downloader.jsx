@@ -5,6 +5,8 @@ import VideoCard from './VideoCard';
 import ProgressBar from './ProgressBar';
 import { motion } from 'framer-motion';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
+
 const Downloader = () => {
     const [url, setUrl] = useState('');
     const [loading, setLoading] = useState(false);
@@ -22,7 +24,7 @@ const Downloader = () => {
         setDownloadProgress(null);
 
         try {
-            const { data } = await axios.post('http://localhost:5000/api/video/info', { url });
+            const { data } = await axios.post(`${API_BASE_URL}/api/video/info`, { url });
             setVideoData(data);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to fetch video information. Please try another URL.');
@@ -36,7 +38,7 @@ const Downloader = () => {
 
         try {
             const fetchParams = isAudio ? `?audio=true&url=${encodeURIComponent(url)}` : `?format=${formatId}&url=${encodeURIComponent(url)}`;
-            const downloadUrl = `http://localhost:5000/api/video/download${fetchParams}`;
+            const downloadUrl = `${API_BASE_URL}/api/video/download${fetchParams}`;
 
             const a = document.createElement('a');
             a.href = downloadUrl;
