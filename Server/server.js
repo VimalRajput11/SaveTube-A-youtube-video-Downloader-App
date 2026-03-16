@@ -92,20 +92,25 @@ app.post('/api/video/info', async (req, res) => {
             noCheckCertificate: true,
             noPlaylist: true,
             flatPlaylist: true,
-            extractorArgs: 'youtube:player_client=android,web',
+            // extractorArgs: 'youtube:player_client=android,web', // Removed to fix 360p limit
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
         });
 
-        // Grouping logic to find available resolutions up to 1080p
-        const maxResolution = 1080;
-        const availableHeights = [...new Set(rawData.formats.map(f => f.height).filter(h => h && h <= maxResolution))].sort((a, b) => b - a);
+        // Grouping logic to find available resolutions up to 4K (2160p)
+        const maxResolution = 2160;
+        const availableHeights = [...new Set(rawData.formats.map(f => f.height).filter(h => h && h >= 144 && h <= maxResolution))].sort((a, b) => b - a);
         
         const qualities = availableHeights.map(height => {
             let label = `${height}p`;
-            if (height >= 1080) label = '1080p Full HD';
+            if (height >= 2160) label = '4K Ultra HD';
+            else if (height >= 1440) label = '1440p QHD';
+            else if (height >= 1080) label = '1080p Full HD';
             else if (height >= 720) label = '720p HD';
             else if (height >= 480) label = '480p SD';
             else if (height >= 360) label = '360p SD';
+            else if (height === 240) label = '240p Low';
+            else if (height === 144) label = '144p Very Low';
+            else label = `${height}p`;
 
             return {
                 id: height.toString(),
@@ -190,7 +195,7 @@ app.post('/api/playlist/info', async (req, res) => {
             flatPlaylist: true,
             noWarnings: true,
             noCheckCertificate: true,
-            extractorArgs: 'youtube:player_client=android,web'
+            // extractorArgs: 'youtube:player_client=android,web' // Removed to fix 360p limit
         });
 
         res.json({

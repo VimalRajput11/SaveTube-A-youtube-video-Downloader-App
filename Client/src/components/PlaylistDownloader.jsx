@@ -69,7 +69,15 @@ const PlaylistDownloader = () => {
                         placeholder="Paste YouTube Playlist URL here..."
                         className="w-full bg-transparent text-slate-200 placeholder-slate-500 outline-none px-2 h-10 sm:h-full text-base sm:text-lg"
                         value={url}
-                        onChange={(e) => setUrl(e.target.value)}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setUrl(val);
+                            if (!val) {
+                                setPlaylistData(null);
+                                setError(null);
+                                setDownloadProgress(null);
+                            }
+                        }}
                     />
                     <button
                         type="submit"
@@ -93,7 +101,11 @@ const PlaylistDownloader = () => {
 
             {/* Progress Indicator */}
             {downloadProgress && (
-                <ProgressBar progress={downloadProgress.progress} status={downloadProgress.status} />
+                <ProgressBar 
+                    progress={downloadProgress.progress} 
+                    status={downloadProgress.status} 
+                    onCancel={() => setDownloadProgress(null)}
+                />
             )}
 
             {/* Data Card */}

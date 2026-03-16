@@ -1,7 +1,17 @@
+import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Loader2, Zap, X, Check } from 'lucide-react';
+import { Loader2, Zap, X, Check, AlertTriangle } from 'lucide-react';
 
 const ProgressBar = ({ progress, status, title, thumbnail, onCancel }) => {
+    const [showConfirm, setShowConfirm] = useState(false);
+
+    useEffect(() => {
+        document.body.style.overflow = 'hidden';
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, []);
+
     return (
         <AnimatePresence>
             <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -17,7 +27,7 @@ const ProgressBar = ({ progress, status, title, thumbnail, onCancel }) => {
                     initial={{ opacity: 0, scale: 0.95 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.95 }}
-                    className="relative w-full max-w-lg bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/5"
+                    className="relative w-full max-w-lg bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/5 overflow-hidden"
                 >
                     <div className="relative z-10 space-y-6">
                         {/* Header */}
@@ -29,7 +39,7 @@ const ProgressBar = ({ progress, status, title, thumbnail, onCancel }) => {
                                 </span>
                              </div>
                              <button 
-                                onClick={onCancel}
+                                onClick={() => setShowConfirm(true)}
                                 className="p-2 hover:bg-white/10 text-slate-400 rounded-xl transition-all"
                             >
                                 <X className="w-5 h-5" />
@@ -82,6 +92,50 @@ const ProgressBar = ({ progress, status, title, thumbnail, onCancel }) => {
                             Please keep this page open until finished
                         </p>
                     </div>
+
+                    {/* Custom Confirmation Modal Overlay */}
+                    <AnimatePresence>
+                        {showConfirm && (
+                            <motion.div 
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="absolute inset-0 z-[110] flex items-center justify-center bg-slate-900/95 backdrop-blur-md p-6"
+                            >
+                                <motion.div 
+                                    initial={{ scale: 0.9, y: 20 }} 
+                                    animate={{ scale: 1, y: 0 }} 
+                                    exit={{ scale: 0.9, y: -20 }}
+                                    className="text-center w-full"
+                                >
+                                    <div className="w-16 h-16 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.2)]">
+                                        <AlertTriangle className="w-8 h-8 text-red-500" />
+                                    </div>
+                                    <h3 className="text-xl font-bold text-white mb-2">Cancel Download?</h3>
+                                    <p className="text-slate-400 text-sm mb-8 px-4">
+                                        Are you sure you want to stop this process? The downloaded progress will be lost.
+                                    </p>
+                                    <div className="flex gap-3">
+                                        <button 
+                                            onClick={() => setShowConfirm(false)} 
+                                            className="flex-1 py-3 px-4 bg-slate-800 hover:bg-slate-700 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-slate-800/50"
+                                        >
+                                            Continue
+                                        </button>
+                                        <button 
+                                            onClick={() => {
+                                                setShowConfirm(false);
+                                                if(onCancel) onCancel();
+                                            }} 
+                                            className="flex-1 py-3 px-4 bg-red-600 hover:bg-red-500 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-red-500/30"
+                                        >
+                                            Yes, Cancel
+                                        </button>
+                                    </div>
+                                </motion.div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
                 </motion.div>
             </div>
         </AnimatePresence>

@@ -187,7 +187,15 @@ const UnifiedDownloader = () => {
                         placeholder="Paste Video or Playlist link here..."
                         className="w-full bg-transparent text-slate-100 placeholder-slate-500 outline-none text-lg h-full"
                         value={url}
-                        onChange={(e) => setUrl(e.target.value)}
+                        onChange={(e) => {
+                            const val = e.target.value;
+                            setUrl(val);
+                            if (!val) {
+                                setData(null);
+                                setError(null);
+                                setDownloadProgress(null);
+                            }
+                        }}
                     />
                 </div>
             </motion.div>
