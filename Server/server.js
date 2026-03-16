@@ -92,7 +92,7 @@ app.post('/api/video/info', async (req, res) => {
             noCheckCertificate: true,
             // To help bypass bot-protection on cloud servers (like Render), we can try setting
             // specific clients. Note: Cloud servers often require cookies to bypass bot checks fully.
-            extractorArgs: 'youtube:player_client=web',
+            // extractorArgs: 'youtube:player_client=web',
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
         });
 
