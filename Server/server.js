@@ -89,10 +89,8 @@ app.post('/api/video/info', async (req, res) => {
         const rawData = await ytDlp(url, {
             dumpJson: true,
             noWarnings: true,
-            noCheckCertificate: true,
-            // Use android_creator as the primary bypass since it avoids bot-blocks and allows 4K, 
-            // falling back to default if it fails.
-            extractorArgs: 'youtube:player_client=android_creator,default',
+            // Use tv_embedded,android_vr as the bypass since it avoids bot-blocks (unlike web/default) and allows 4K (unlike basic android).
+            extractorArgs: 'youtube:player_client=tv_embedded,android_vr',
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
         });
 
@@ -193,9 +191,8 @@ app.post('/api/playlist/info', async (req, res) => {
         const rawData = await ytDlp(url, {
             dumpSingleJson: true,
             flatPlaylist: true,
-            noWarnings: true,
             noCheckCertificate: true,
-            extractorArgs: 'youtube:player_client=android_creator,default'
+            extractorArgs: 'youtube:player_client=tv_embedded,android_vr'
         });
 
         res.json({
