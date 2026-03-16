@@ -52,7 +52,7 @@ const downloadVideo = async (url, formatId, isAudio, taskId) => {
             dumpJson: true,
             noWarnings: true,
             noCheckCertificate: true,
-            // extractorArgs: 'youtube:player_client=android,web', // Removed to fix 360p limit
+            extractorArgs: 'youtube:player_client=android_creator,default',
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36',
             ffmpegLocation: ffmpegPath
         });
@@ -82,7 +82,7 @@ const downloadVideo = async (url, formatId, isAudio, taskId) => {
             noWriteAutoSubs: true,
             subLangs: '-all',
             compatOptions: 'no-keep-subs',
-            // extractorArgs: 'youtube:player_client=android,web', // Removed to fix 360p limit
+            extractorArgs: 'youtube:player_client=android_creator,default',
             noMtime: true,
             noCacheDir: true
         };
@@ -138,7 +138,7 @@ const downloadPlaylist = async (url, taskId) => {
             dumpSingleJson: true,
             flatPlaylist: true,
             noWarnings: true,
-            // extractorArgs: 'youtube:player_client=android,web', // Removed to fix 360p limit
+            extractorArgs: 'youtube:player_client=android_creator,default',
             noCheckCertificate: true
         });
         tasks[taskId].title = info.title;
@@ -160,7 +160,7 @@ const downloadPlaylist = async (url, taskId) => {
             noWriteAutoSubs: true,
             subLangs: '-all',
             compatOptions: 'no-keep-subs',
-            // extractorArgs: 'youtube:player_client=android,web', // Removed to fix 360p limit
+            extractorArgs: 'youtube:player_client=android_creator,default',
             noMtime: true,
             noCacheDir: true
         });

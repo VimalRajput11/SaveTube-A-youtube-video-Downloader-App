@@ -90,9 +90,9 @@ app.post('/api/video/info', async (req, res) => {
             dumpJson: true,
             noWarnings: true,
             noCheckCertificate: true,
-            // To help bypass bot-protection on cloud servers (like Render), we can try setting
-            // specific clients. Note: Cloud servers often require cookies to bypass bot checks fully.
-            // extractorArgs: 'youtube:player_client=web',
+            // Use android_creator as the primary bypass since it avoids bot-blocks and allows 4K, 
+            // falling back to default if it fails.
+            extractorArgs: 'youtube:player_client=android_creator,default',
             userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36'
         });
 
@@ -195,7 +195,7 @@ app.post('/api/playlist/info', async (req, res) => {
             flatPlaylist: true,
             noWarnings: true,
             noCheckCertificate: true,
-            // extractorArgs: 'youtube:player_client=android,web' // Removed to fix 360p limit
+            extractorArgs: 'youtube:player_client=android_creator,default'
         });
 
         res.json({
